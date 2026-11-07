@@ -38,18 +38,13 @@
     }
   });
 
-  window.downloadSalmanCV = function (e, track) {
+  window.downloadSalmanCV = function (e) {
     if (e && typeof e.preventDefault === 'function') {
       e.preventDefault();
     }
     window.closeAllCvDropdowns();
 
-    var selectedTrack = track === 'technical' ? 'technical' : 'governance';
-    var fileName =
-      selectedTrack === 'technical'
-        ? 'Salman_Alharbi_Data_Science_AI_CV.pdf'
-        : 'SALMAN-ALHARBI-Resume.pdf';
-
+    var fileName = 'SALMAN-ALHARBI-Resume.pdf';
     var a = document.createElement('a');
     a.href = './' + fileName;
     a.download = fileName;
