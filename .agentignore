@@ -1,0 +1,11 @@
+# Ignore binary and static PDF files to save AI context tokens
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.ico
+node_modules/
+dist/
+cv-data.js
+
