@@ -268,13 +268,19 @@ function buildPdf(track) {
   curY -= 12;
 
   // CERTIFICATIONS
-  curY = sectionHeader('CERTIFICATIONS & CREDENTIALS (15)', curY);
+  curY = sectionHeader('CERTIFICATIONS & CREDENTIALS (19)', curY);
   const certs = [
     [
-      'Google Cloud Generative AI Leader | Google Cloud',
-      '2025',
-      'Enterprise GenAI Agents & Applications | Google Cloud',
-      '2025'
+      'Google Cloud Generative AI Leader Track (5 Courses)',
+      'DataCamp',
+      'Gen AI Agents: Transform Your Organization',
+      'Google Cloud'
+    ],
+    [
+      'Gen AI Apps: Transform Your Work & Navigate Landscape',
+      'Google Cloud',
+      'Gen AI: Unlock Foundational Concepts & Beyond Chatbot',
+      'Google Cloud'
     ],
     [
       'Fundamentals of Artificial Intelligence | SDAIA',

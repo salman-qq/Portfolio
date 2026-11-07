@@ -125,23 +125,28 @@ flowchart LR
 
 ---
 
-## 🎓 Education & 15 Professional Certifications | التعليم والشهادات الاحترافية
+## 🎓 Education & 19 Professional Certifications | التعليم والشهادات الاحترافية
 
 - 🎓 **Bachelor of Science in Data Science** — *University of Jeddah (College of Computer Science & Engineering, 2020–2025)*
   - ⭐ **Official ABET International Accreditation Representative:** Selected by faculty to represent the Data Science cohort in live evaluation interviews before the international ABET board (awarded Official Certificate of Appreciation).
-- 📜 **Selected Certifications:**
-  - **Google Cloud:** *Generative AI Leader* & *Enterprise Generative AI Agents & Applications*
+- 📜 **Selected Certifications (19 Verified Credentials):**
+  - **Google Cloud & DataCamp — Generative AI Leader Track (5 Courses):** [Verify Track Accomplishment](https://www.datacamp.com/completed/statement-of-accomplishment/track/84c221330a8b983e8595452ff4939465600e8635)
+    1. *Gen AI: Beyond the Chatbot* ([Course](https://www.datacamp.com/courses/gen-ai-beyond-the-chatbot))
+    2. *Gen AI: Unlock Foundational Concepts* ([Course](https://www.datacamp.com/courses/gen-ai-unlock-foundational-concepts))
+    3. *Gen AI: Navigate the Landscape* ([Course](https://www.datacamp.com/courses/gen-ai-navigate-the-landscape))
+    4. *Gen AI Apps: Transform Your Work* ([Course](https://www.datacamp.com/courses/gen-ai-apps-transform-your-work))
+    5. *Gen AI Agents: Transform Your Organization* ([Course](https://www.datacamp.com/courses/gen-ai-agents-transform-your-organization))
   - **SDAIA (سدايا):** *Fundamentals of Artificial Intelligence (SAMAI)*
   - **Google:** *Google Data Analytics Professional Certificate (8-Course Specialization — [Verify](https://coursera.org/verify/professional-cert/X8VQ4U2L882Y))*
   - **DeepLearning.AI:** *Linear Algebra for ML & Data Science* ([Verify](https://coursera.org/verify/TJ4SZ46T8CG7)) · *Calculus for ML & Data Science* ([Verify](https://coursera.org/verify/VSRRVEPJX85M))
-  - **University of Michigan:** *Python Programming* ([Verify](https://coursera.org/verify/K95V8MS2XEH4))
+  - **University of Michigan:** *Python Basics* ([Verify](https://coursera.org/verify/K95V8MS2XEH4))
   - **Microsoft:** *Microsoft 365 Fundamentals Specialization*
 
 ---
 
 ## 📬 Contact | تواصل معي
 
-- 🌐 **Interactive Bilingual Portfolio:** [salman-qq.github.io](https://salman-qq.github.io/)
+- 🌐 **Interactive Bilingual Portfolio:** [salman-qq.github.io/Portfolio](https://salman-qq.github.io/Portfolio/)
 - 💼 **LinkedIn:** [linkedin.com/in/salman-alharbi-data-scientist](https://www.linkedin.com/in/salman-alharbi-data-scientist)
 - 📧 **Email:** [salman.alharbi.q@gmail.com](mailto:salman.alharbi.q@gmail.com)
 - 📱 **Phone:** `+966 59 019 7730`
