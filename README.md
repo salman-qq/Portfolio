@@ -13,14 +13,17 @@
   <a href="https://salman-qq.github.io/Portfolio/">
     <img src="https://img.shields.io/badge/🌐_Interactive_Portfolio-GitHub_Pages-E8D44D?style=for-the-badge&labelColor=0a0c10" alt="Interactive Portfolio" />
   </a>
-  <a href="https://www.linkedin.com/in/salman-alharbi-data-scientist">
-    <img src="https://img.shields.io/badge/LinkedIn-Salman_Alharbi-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=0a0c10" alt="LinkedIn" />
-  </a>
-  <a href="mailto:salman.alharbi.q@gmail.com">
-    <img src="https://img.shields.io/badge/Email-salman.alharbi.q%40gmail.com-E8D44D?style=for-the-badge&logo=gmail&logoColor=E8D44D&labelColor=0a0c10" alt="Email" />
+  <a href="https://salman-qq.github.io/Portfolio/#roi-simulator">
+    <img src="https://img.shields.io/badge/⚡_Sovereign_AI_Calculator-Live_Simulator-E8D44D?style=for-the-badge&labelColor=0a0c10" alt="Sovereign AI Calculator" />
   </a>
   <a href="./SALMAN-ALHARBI-Resume.pdf">
     <img src="https://img.shields.io/badge/📄_Download_CV-PDF-E8D44D?style=for-the-badge&labelColor=0a0c10" alt="Download CV" />
+  </a>
+  <a href="./Salman_Alharbi.vcf">
+    <img src="https://img.shields.io/badge/🪪_Save_Contact-vCard-E8D44D?style=for-the-badge&labelColor=0a0c10" alt="Save Contact vCard" />
+  </a>
+  <a href="https://www.linkedin.com/in/salman-alharbi-data-scientist">
+    <img src="https://img.shields.io/badge/LinkedIn-Salman_Alharbi-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=0a0c10" alt="LinkedIn" />
   </a>
 </p>
 
@@ -50,6 +53,25 @@ flowchart LR
     C --> D["⚖️ Regulatory Governance Gate<br/>(Saudi PDPL · NDMO Standards)"]
     D --> E["🎯 Executive Decision Intelligence<br/>(< 5s Cycle · Power BI · Streamlit)"]
 ```
+
+---
+
+## 🧮 Operational Impact & Sovereign AI Calculator | حاسبة الأثر التشغيلي والذكاء الاصطناعي السيادي
+
+> 🔗 **[Launch Live Interactive Calculator on GitHub Pages ➔](https://salman-qq.github.io/Portfolio/#roi-simulator)**  
+> *Modeled on production deployments at SERA, NCM, IEEE Insurance Research, and Hajj-scale crowd/operational ecosystems.*
+
+```text
+Monthly_Hours_Saved = (Team × 42h) + [(Records_Volume / 10,000) × (3.2 + 0.35 × Team)]
+Annual_SAR_Saved    = (Monthly_Hours_Saved × 12 × 145 SAR) + [(Records_Volume / 1,000) × 62 SAR Token_API_Offset]
+```
+
+| Executive Scenario / السيناريو التشغيلي | Volume & Team / الحجم والفريق | Decision Cycle / سرعة القرار | Hours Saved / الوفر الشهري | Annual ROI & Token Savings / الوفر السنوي | Data Residency / السيادة (PDPL) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **🕋 Hajj & Crowd Ops**<br/>منظومة الحج والمشاعر المليونية | `1,500,000 Records`<br/>`15 Analysts` | **`< 5 sec`**<br/>*(vs ~84h manual)* | **`1,898 hrs/mo`** | **`3.39M SAR / yr`**<br/>*(Zero Cloud Token Fees)* | **`100% In-Kingdom`**<br/>🛡️ *PDPL & NDMO Safe* |
+| **⚡ SERA Regulatory Platform**<br/>هيئة تنظيم المياه والكهرباء | `500,000 Records`<br/>`10 Analysts` | **`< 5 sec`**<br/>*(vs ~30h manual)* | **`755 hrs/mo`** | **`1.34M SAR / yr`**<br/>*(Zero Cloud Token Fees)* | **`100% In-Kingdom`**<br/>🛡️ *PDPL & NDMO Safe* |
+| **🚗 IEEE Insurance Vision AI**<br/>نظام دعم القرار التأميني (IEEE) | `250,000 Records`<br/>`8 Analysts` | **`< 5 sec`**<br/>*(vs ~16h manual)* | **`486 hrs/mo`** | **`861K SAR / yr`**<br/>*(Zero Cloud Token Fees)* | **`100% In-Kingdom`**<br/>🛡️ *PDPL & NDMO Safe* |
+| **🌦️ NCM Meteorology ETL**<br/>المركز الوطني للأرصاد | `150,000 Records`<br/>`15 Analysts` | **`< 5 sec`**<br/>*(vs ~9h manual)* | **`757 hrs/mo`** | **`1.33M SAR / yr`**<br/>*(Zero Cloud Token Fees)* | **`100% In-Kingdom`**<br/>🛡️ *PDPL & NDMO Safe* |
 
 ---
 
@@ -144,10 +166,20 @@ flowchart LR
 
 ---
 
-## 📬 Contact | تواصل معي
+## 📬 Contact & Conference QR Pass | تواصل معي وباركود الملتقيات الفوري
+
+<div align="center">
+
+| 🪪 Smart Contact Card (vCard) | 📄 Official Resume PDF | 🌐 Interactive Portfolio |
+| :---: | :---: | :---: |
+| <a href="./Salman_Alharbi.vcf"><img src="./assets/qr-vcard.svg" width="165" alt="Salman Alharbi vCard QR" /></a> | <a href="./SALMAN-ALHARBI-Resume.pdf"><img src="./assets/qr-cv.svg" width="165" alt="Salman Alharbi Official Resume QR" /></a> | <a href="https://salman-qq.github.io/Portfolio/"><img src="./assets/qr-portfolio.svg" width="165" alt="Salman Alharbi Portfolio QR" /></a> |
+| **Scan to Save Contact**<br/>امسح لإضافة جهة الاتصال فوراً<br/>[📥 Download `.vcf`](./Salman_Alharbi.vcf) | **Scan for Official CV**<br/>امسح لتحميل السيرة الذاتية<br/>[📥 Download `PDF`](./SALMAN-ALHARBI-Resume.pdf) | **Scan for Live Site**<br/>امسح لفتح البورتفوليو التفاعلي<br/>[🌐 Open `GitHub Pages`](https://salman-qq.github.io/Portfolio/) |
+
+</div>
 
 - 🌐 **Interactive Bilingual Portfolio:** [salman-qq.github.io/Portfolio](https://salman-qq.github.io/Portfolio/)
 - 💼 **LinkedIn:** [linkedin.com/in/salman-alharbi-data-scientist](https://www.linkedin.com/in/salman-alharbi-data-scientist)
 - 📧 **Email:** [salman.alharbi.q@gmail.com](mailto:salman.alharbi.q@gmail.com)
 - 📱 **Phone:** `+966 59 019 7730`
+
 

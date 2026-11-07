@@ -328,11 +328,20 @@
   var simDecisionSub = document.getElementById('simDecisionSub');
   var simHoursCounter = document.getElementById('simHoursCounter');
   var simHoursSub = document.getElementById('simHoursSub');
+  var simSarCounter = document.getElementById('simSarCounter');
+  var simSarSub = document.getElementById('simSarSub');
+  var simResidencyCounter = document.getElementById('simResidencyCounter');
+  var simResidencySub = document.getElementById('simResidencySub');
+  var simResidencyCard = document.getElementById('simResidencyCard');
+  var simPresetBtns = document.querySelectorAll('.roi-preset-btn');
+  var simArchBtns = document.querySelectorAll('.roi-arch-btn');
+  var currentArchMode = 'sovereign';
 
   function updateRoiSimulator() {
     if (!simRecordsSlider || !simTeamSlider) return;
     var records = parseInt(simRecordsSlider.value, 10) || 250000;
     var team = parseInt(simTeamSlider.value, 10) || 8;
+    var isSovereign = currentArchMode === 'sovereign';
 
     var baseTeamHours = team * 42;
     var volumeBonusHours = Math.round((records / 10000) * (3.2 + team * 0.35));
@@ -340,8 +349,23 @@
 
     var manualCycleHours = Math.max(2, Math.round((records / 25000) * 1.4 + (16 - team) * 0.3));
 
+    // Annual labor savings (145 SAR/hr blended executive/analyst rate) + Token API cost avoidance (62 SAR per 1K records/yr)
+    var annualLaborSar = totalMonthlyHoursSaved * 12 * 145;
+    var annualTokenApiSar = Math.round((records / 1000) * 62);
+    var netAnnualSar = isSovereign
+      ? annualLaborSar + annualTokenApiSar
+      : Math.max(0, Math.round(annualLaborSar * 0.65 - annualTokenApiSar * 1.4));
+
     var formattedRecords = records.toLocaleString('en-US');
     var formattedHours = totalMonthlyHoursSaved.toLocaleString('en-US');
+    var formattedSar =
+      netAnnualSar >= 1000000
+        ? (netAnnualSar / 1000000).toFixed(2) + 'M'
+        : Math.round(netAnnualSar / 1000).toLocaleString('en-US') + 'K';
+
+    if (simResidencyCard) {
+      simResidencyCard.classList.toggle('arch-warning-card', !isSovereign);
+    }
 
     if (currentLang === 'ar') {
       if (simRecordsValueDisplay) simRecordsValueDisplay.textContent = formattedRecords + ' سجل';
@@ -349,25 +373,47 @@
         simTeamValueDisplay.textContent =
           team === 1 ? 'محلل واحد' : team === 2 ? 'محللان (2)' : team + ' محللين';
       }
-      if (simDecisionCounter) simDecisionCounter.textContent = '< 5 ثوانٍ';
+      if (simDecisionCounter) {
+        simDecisionCounter.textContent = isSovereign ? '< 5 ثوانٍ' : '~18–45 ثانية';
+      }
       if (simDecisionSub) {
-        simDecisionSub.textContent =
-          'تقليص زمن المراجعة من ~' + manualCycleHours + ' ساعة عمل يدوي إلى أقل من 5 ثوانٍ';
+        simDecisionSub.textContent = isSovereign
+          ? 'تقليص زمن المراجعة من ~' + manualCycleHours + ' ساعة عمل يدوي إلى أقل من 5 ثوانٍ محلياً'
+          : 'زمن استجابة أبطأ بسبب إرسال البيانات عبر الإنترنت لخوادم سحابية خارجية';
       }
       if (simHoursCounter) simHoursCounter.textContent = formattedHours + ' ساعة/شهرياً';
       if (simHoursSub) {
         simHoursSub.textContent =
           'توفير مباشر لفريق مكون من ' + team + ' محللين لمعالجة ' + formattedRecords + ' سجل';
       }
+      if (simSarCounter) {
+        simSarCounter.textContent = formattedSar + ' ر.س/سنوياً';
+      }
+      if (simSarSub) {
+        simSarSub.textContent = isSovereign
+          ? 'صفر رسوم توكنز سحابية خارجية + توفير ' + annualTokenApiSar.toLocaleString('en-US') + ' ر.س من فواتير API'
+          : 'خصم رسوم التوكنز المتكررة (~' + Math.round(annualTokenApiSar * 1.4).toLocaleString('en-US') + ' ر.س/سنوياً)';
+      }
+      if (simResidencyCounter) {
+        simResidencyCounter.textContent = isSovereign ? '100%' : '⚠️ خطر PDPL';
+      }
+      if (simResidencySub) {
+        simResidencySub.textContent = isSovereign
+          ? 'توطين سيادي بنسبة 100% داخل المملكة دون أي تسريب سحابي خارجي (متوافق مع NDMO)'
+          : 'خروج البيانات الحساسة لخوادم أجنبية يعرض المنظمة لمخالفات نظام حماية البيانات الشخصية';
+      }
     } else {
       if (simRecordsValueDisplay) simRecordsValueDisplay.textContent = formattedRecords + ' Records';
       if (simTeamValueDisplay) {
         simTeamValueDisplay.textContent = team + (team === 1 ? ' Analyst' : ' Analysts');
       }
-      if (simDecisionCounter) simDecisionCounter.textContent = '< 5 sec';
+      if (simDecisionCounter) {
+        simDecisionCounter.textContent = isSovereign ? '< 5 sec' : '~18–45 sec';
+      }
       if (simDecisionSub) {
-        simDecisionSub.textContent =
-          'Compressed from ~' + manualCycleHours + ' hrs of manual review to < 5 seconds via Local LLMs';
+        simDecisionSub.textContent = isSovereign
+          ? 'Compressed from ~' + manualCycleHours + ' hrs of manual review to < 5 seconds via Local LLMs'
+          : 'Higher network latency due to external API throttling & cross-border payload routing';
       }
       if (simHoursCounter) simHoursCounter.textContent = formattedHours + ' hrs/mo';
       if (simHoursSub) {
@@ -379,11 +425,178 @@
           formattedRecords +
           ' records';
       }
+      if (simSarCounter) {
+        simSarCounter.textContent = formattedSar + ' SAR/yr';
+      }
+      if (simSarSub) {
+        simSarSub.textContent = isSovereign
+          ? 'Zero external API token fees + saves ~' + annualTokenApiSar.toLocaleString('en-US') + ' SAR/yr in cloud tokens'
+          : 'Reduced net ROI due to recurring per-token API billing (~' + Math.round(annualTokenApiSar * 1.4).toLocaleString('en-US') + ' SAR/yr)';
+      }
+      if (simResidencyCounter) {
+        simResidencyCounter.textContent = isSovereign ? '100%' : '⚠️ PDPL Risk';
+      }
+      if (simResidencySub) {
+        simResidencySub.textContent = isSovereign
+          ? 'Zero external cloud leakage · Full compliance with Saudi PDPL & NDMO'
+          : 'Cross-border data transfer exposes sensitive records to regulatory compliance risk';
+      }
     }
   }
 
-  if (simRecordsSlider) simRecordsSlider.addEventListener('input', updateRoiSimulator);
-  if (simTeamSlider) simTeamSlider.addEventListener('input', updateRoiSimulator);
+  if (simRecordsSlider) {
+    simRecordsSlider.addEventListener('input', function () {
+      simPresetBtns.forEach(function (b) { b.classList.remove('active'); });
+      updateRoiSimulator();
+    });
+  }
+  if (simTeamSlider) {
+    simTeamSlider.addEventListener('input', function () {
+      simPresetBtns.forEach(function (b) { b.classList.remove('active'); });
+      updateRoiSimulator();
+    });
+  }
+
+  simPresetBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      simPresetBtns.forEach(function (b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      var r = this.getAttribute('data-records');
+      var t = this.getAttribute('data-team');
+      var a = this.getAttribute('data-arch') || 'sovereign';
+      if (simRecordsSlider && r) simRecordsSlider.value = r;
+      if (simTeamSlider && t) simTeamSlider.value = t;
+      currentArchMode = a;
+      simArchBtns.forEach(function (ab) {
+        ab.classList.toggle('active', ab.getAttribute('data-arch-mode') === currentArchMode);
+      });
+      updateRoiSimulator();
+    });
+  });
+
+  simArchBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      currentArchMode = this.getAttribute('data-arch-mode') || 'sovereign';
+      simArchBtns.forEach(function (ab) {
+        ab.classList.toggle('active', ab.getAttribute('data-arch-mode') === currentArchMode);
+      });
+      updateRoiSimulator();
+    });
+  });
+
+  // ===== SMART CONFERENCE QR & DIGITAL BUSINESS CARD CONTROLLER =====
+  var qrModal = document.getElementById('qrModal');
+  var qrModalImg = document.getElementById('qrModalImg');
+  var qrModalCaption = document.getElementById('qrModalCaption');
+  var qrStageBox = document.getElementById('qrStageBox');
+  var currentQrTab = 'vcard';
+
+  var qrAssetMap = {
+    vcard: './assets/qr-vcard.svg',
+    cv: './assets/qr-cv.svg',
+    portfolio: './assets/qr-portfolio.svg'
+  };
+
+  var qrCaptionKeyMap = {
+    vcard: 'qr_card_vcard_sub',
+    cv: 'qr_card_cv_sub',
+    portfolio: 'qr_card_port_sub'
+  };
+
+  window.switchQrTab = function (tabName) {
+    currentQrTab = tabName || 'vcard';
+    document.querySelectorAll('.qr-tab-btn').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-qr-tab') === currentQrTab);
+    });
+    if (qrModalImg && qrAssetMap[currentQrTab]) {
+      qrModalImg.src = qrAssetMap[currentQrTab];
+    }
+    if (qrModalCaption) {
+      var capKey = qrCaptionKeyMap[currentQrTab];
+      if (translations[currentLang] && translations[currentLang][capKey]) {
+        qrModalCaption.textContent = translations[currentLang][capKey];
+      }
+    }
+    if (qrStageBox) {
+      qrStageBox.classList.remove('qr-fullscreen-zoom');
+    }
+  };
+
+  window.openQrModal = function (tabName) {
+    window.switchQrTab(tabName || 'vcard');
+    if (qrModal) {
+      qrModal.classList.add('open');
+      qrModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    var drawer = document.getElementById('mobileDrawer');
+    var menuBtn = document.getElementById('mobileMenuBtn');
+    if (drawer && drawer.classList.contains('open')) {
+      drawer.classList.remove('open');
+      if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  window.closeQrModal = function () {
+    if (qrModal) {
+      qrModal.classList.remove('open');
+      qrModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  };
+
+  if (qrModal) {
+    qrModal.addEventListener('click', function (e) {
+      if (e.target === qrModal) {
+        window.closeQrModal();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && qrModal && qrModal.classList.contains('open')) {
+      window.closeQrModal();
+    }
+  });
+
+  window.copyPortfolioUrl = function (btnEl) {
+    var url = 'https://salman-qq.github.io/Portfolio/';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    if (btnEl) {
+      var span = btnEl.querySelector('span');
+      if (span) {
+        var origText = span.textContent;
+        span.textContent =
+          (translations[currentLang] && translations[currentLang].qr_btn_copied) || 'Copied ✓';
+        setTimeout(function () {
+          span.textContent =
+            (translations[currentLang] && translations[currentLang].qr_btn_copy_link) || origText;
+        }, 2000);
+      }
+    }
+  };
+
+  window.sharePortfolio = function () {
+    var shareData = {
+      title: 'Salman Alharbi | سلمان الحربي — Decision Intelligence & Sovereign AI',
+      text: 'Decision Intelligence & Data Governance Specialist (PDPL & NDMO) | Interactive Portfolio & CV',
+      url: 'https://salman-qq.github.io/Portfolio/'
+    };
+    if (navigator.share) {
+      navigator.share(shareData).catch(function () {});
+    } else {
+      window.openQrModal('portfolio');
+    }
+  };
 
   // ===== BILINGUAL (EN/AR) ENGINE =====
   function applyLanguage(lang) {
@@ -415,6 +628,9 @@
 
     updateLensStatusText();
     updateRoiSimulator();
+    if (typeof window.switchQrTab === 'function') {
+      window.switchQrTab(currentQrTab);
+    }
 
     if (activeProjectId) {
       renderModalContent(activeProjectId);
