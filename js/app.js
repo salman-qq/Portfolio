@@ -378,29 +378,29 @@
       }
       if (simDecisionSub) {
         simDecisionSub.textContent = isSovereign
-          ? 'تقليص زمن المراجعة من ~' + manualCycleHours + ' ساعة عمل يدوي إلى أقل من 5 ثوانٍ محلياً'
-          : 'زمن استجابة أبطأ بسبب إرسال البيانات عبر الإنترنت لخوادم سحابية خارجية';
+          ? 'تقليص من ~' + manualCycleHours + ' ساعة عمل يدوي إلى < 5 ثوانٍ محلياً'
+          : 'أبطأ بسبب زمن استجابة API السحابي الخارجي';
       }
       if (simHoursCounter) simHoursCounter.textContent = formattedHours + ' ساعة/شهرياً';
       if (simHoursSub) {
         simHoursSub.textContent =
-          'توفير مباشر لفريق مكون من ' + team + ' محللين لمعالجة ' + formattedRecords + ' سجل';
+          'وفر مباشر لـ ' + team + ' محللين (' + formattedRecords + ' سجل)';
       }
       if (simSarCounter) {
         simSarCounter.textContent = formattedSar + ' ر.س/سنوياً';
       }
       if (simSarSub) {
         simSarSub.textContent = isSovereign
-          ? 'صفر رسوم توكنز سحابية خارجية + توفير ' + annualTokenApiSar.toLocaleString('en-US') + ' ر.س من فواتير API'
-          : 'خصم رسوم التوكنز المتكررة (~' + Math.round(annualTokenApiSar * 1.4).toLocaleString('en-US') + ' ر.س/سنوياً)';
+          ? 'صفر فواتير توكنز + وفر ' + annualTokenApiSar.toLocaleString('en-US') + ' ر.س/سنة'
+          : 'مخصوم منه رسوم التوكنز (~' + Math.round(annualTokenApiSar * 1.4).toLocaleString('en-US') + ' ر.س/سنة)';
       }
       if (simResidencyCounter) {
         simResidencyCounter.textContent = isSovereign ? '100%' : '⚠️ خطر PDPL';
       }
       if (simResidencySub) {
         simResidencySub.textContent = isSovereign
-          ? 'توطين سيادي بنسبة 100% داخل المملكة دون أي تسريب سحابي خارجي (متوافق مع NDMO)'
-          : 'خروج البيانات الحساسة لخوادم أجنبية يعرض المنظمة لمخالفات نظام حماية البيانات الشخصية';
+          ? 'توطين سيادي 100% داخل المملكة (متوافق مع NDMO)'
+          : 'خروج البيانات الحساسة يعرض المنظمة لمخالفات PDPL';
       }
     } else {
       if (simRecordsValueDisplay) simRecordsValueDisplay.textContent = formattedRecords + ' Records';
@@ -412,34 +412,29 @@
       }
       if (simDecisionSub) {
         simDecisionSub.textContent = isSovereign
-          ? 'Compressed from ~' + manualCycleHours + ' hrs of manual review to < 5 seconds via Local LLMs'
-          : 'Higher network latency due to external API throttling & cross-border payload routing';
+          ? 'Compressed from ~' + manualCycleHours + 'h manual review via Local LLMs'
+          : 'Higher latency due to external cloud API routing';
       }
       if (simHoursCounter) simHoursCounter.textContent = formattedHours + ' hrs/mo';
       if (simHoursSub) {
         simHoursSub.textContent =
-          'Saved across ' +
-          team +
-          (team === 1 ? ' analyst' : ' analysts') +
-          ' processing ' +
-          formattedRecords +
-          ' records';
+          'Saved across ' + team + (team === 1 ? ' analyst' : ' analysts') + ' (' + formattedRecords + ' records)';
       }
       if (simSarCounter) {
         simSarCounter.textContent = formattedSar + ' SAR/yr';
       }
       if (simSarSub) {
         simSarSub.textContent = isSovereign
-          ? 'Zero external API token fees + saves ~' + annualTokenApiSar.toLocaleString('en-US') + ' SAR/yr in cloud tokens'
-          : 'Reduced net ROI due to recurring per-token API billing (~' + Math.round(annualTokenApiSar * 1.4).toLocaleString('en-US') + ' SAR/yr)';
+          ? 'Zero token fees + saves ~' + annualTokenApiSar.toLocaleString('en-US') + ' SAR/yr in API costs'
+          : 'Net ROI reduced by recurring token fees (~' + Math.round(annualTokenApiSar * 1.4).toLocaleString('en-US') + ' SAR/yr)';
       }
       if (simResidencyCounter) {
         simResidencyCounter.textContent = isSovereign ? '100%' : '⚠️ PDPL Risk';
       }
       if (simResidencySub) {
         simResidencySub.textContent = isSovereign
-          ? 'Zero external cloud leakage · Full compliance with Saudi PDPL & NDMO'
-          : 'Cross-border data transfer exposes sensitive records to regulatory compliance risk';
+          ? 'Zero external cloud leakage · 100% PDPL & NDMO'
+          : 'Cross-border payload transfer creates PDPL risk';
       }
     }
   }
@@ -644,14 +639,23 @@
     var data = QR_MATRICES[type] || QR_MATRICES.vcard;
     var size = data.size;
     var rows = data.rows;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-    var cssSize = parseInt(canvas.getAttribute('width') || '180', 10);
-    canvas.width = Math.round(cssSize * dpr);
-    canvas.height = Math.round(cssSize * dpr);
-    canvas.style.width = cssSize + 'px';
-    canvas.style.height = cssSize + 'px';
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // CRITICAL FIX: Always read immutable data-size attribute (never 'width', which canvas.width mutates!)
+    var rawSize = parseInt(canvas.getAttribute('data-size') || '168', 10);
+    var cssSize = Math.min(Math.max(rawSize || 168, 120), 280);
+    var targetPx = Math.round(cssSize * dpr);
+
+    // Only allocate GPU backing store when dimensions actually differ — prevents GPU OOM crash
+    if (canvas.width !== targetPx || canvas.height !== targetPx) {
+      canvas.width = targetPx;
+      canvas.height = targetPx;
+      canvas.style.width = cssSize + 'px';
+      canvas.style.height = cssSize + 'px';
+    }
 
     var ctx = canvas.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, targetPx, targetPx);
     ctx.save();
     ctx.scale(dpr, dpr);
 
@@ -659,14 +663,14 @@
     var totalUnits = size + quietZone * 2;
     var cell = cssSize / totalUnits;
 
-    // Background fill (zero harsh #ffffff white glare by default)
-    ctx.fillStyle = lightMode ? '#FEFCE8' : '#0F172A';
+    // Background fill: crisp obsidian carbon (#090b10) or warm ivory scan mode (#FAF8EE)
+    ctx.fillStyle = lightMode ? '#FAF8EE' : '#090b10';
     ctx.fillRect(0, 0, cssSize, cssSize);
 
-    // Subtle executive inner border
-    ctx.strokeStyle = lightMode ? 'rgba(15, 23, 42, 0.18)' : 'rgba(250, 204, 21, 0.38)';
+    // Crisp executive inner border
+    ctx.strokeStyle = lightMode ? 'rgba(8, 9, 13, 0.22)' : 'rgba(232, 212, 77, 0.42)';
     ctx.lineWidth = 1.5;
-    ctx.strokeRect(2, 2, cssSize - 4, cssSize - 4);
+    ctx.strokeRect(1.5, 1.5, cssSize - 3, cssSize - 3);
 
     for (var r = 0; r < size; r++) {
       var rowStr = rows[r];
@@ -675,12 +679,11 @@
           var x = (c + quietZone) * cell;
           var y = (r + quietZone) * cell;
           if (lightMode) {
-            ctx.fillStyle = isFinderPatternModule(r, c, size) ? '#0F172A' : '#1E293B';
+            ctx.fillStyle = '#08090d';
           } else {
-            ctx.fillStyle = isFinderPatternModule(r, c, size) ? '#FACC15' : '#FEF08A';
+            ctx.fillStyle = isFinderPatternModule(r, c, size) ? '#E8D44D' : '#FEF08A';
           }
-          // Draw crisp module with slight overlap to prevent subpixel gaps
-          ctx.fillRect(x - 0.15, y - 0.15, cell + 0.3, cell + 0.3);
+          ctx.fillRect(x - 0.14, y - 0.14, cell + 0.28, cell + 0.28);
         }
       }
     }
@@ -1096,7 +1099,8 @@
     });
   });
 
-  // ===== SCROLL-DRIVEN JOURNEY BACKGROUND (Data -> Patterns -> AI -> Decision) =====
+  // ===== SOVEREIGN DATA CONSTELLATION & INTERACTIVE NODE MESH BACKGROUND =====
+  // Crisp, 60fps, zero-blur architectural constellation that responds to cursor & touch
   (function () {
     if (rm) return;
     var cv = D.getElementById('journeyCanvas');
@@ -1105,12 +1109,13 @@
     if (!ctx) return;
 
     var isMobile = window.innerWidth < 768;
-    var N = isMobile ? 55 : 135;
+    var N = isMobile ? 38 : 82;
     var DPR = Math.min(window.devicePixelRatio || 1, 2);
     var W = 0;
     var H = 0;
 
     function onResize() {
+      isMobile = window.innerWidth < 768;
       W = window.innerWidth;
       H = window.innerHeight;
       cv.width = Math.floor(W * DPR);
@@ -1122,12 +1127,32 @@
     onResize();
     window.addEventListener('resize', onResize);
 
-    var mouse = { x: W * 0.5, y: H * 0.5, targetX: W * 0.5, targetY: H * 0.5 };
+    var pointer = {
+      x: W * 0.65,
+      y: H * 0.4,
+      targetX: W * 0.65,
+      targetY: H * 0.4,
+      active: false
+    };
+
     window.addEventListener(
       'mousemove',
       function (e) {
-        mouse.targetX = e.clientX;
-        mouse.targetY = e.clientY;
+        pointer.targetX = e.clientX;
+        pointer.targetY = e.clientY;
+        pointer.active = true;
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      'touchmove',
+      function (e) {
+        if (e.touches && e.touches[0]) {
+          pointer.targetX = e.touches[0].clientX;
+          pointer.targetY = e.touches[0].clientY;
+          pointer.active = true;
+        }
       },
       { passive: true }
     );
@@ -1149,34 +1174,26 @@
       });
     });
 
-    var particles = [];
+    // Initialize crisp sovereign constellation nodes spread cleanly across viewport
+    var nodes = [];
     for (var i = 0; i < N; i++) {
-      var fr = i / N;
-      particles.push({
-        id: i,
-        fr: fr,
-        angle: fr * Math.PI * 2,
-        baseRadiusFactor: 0.75 + (Math.sin(i * 1.73) * 0.5 + 0.5) * 0.45,
-        zJitter: (Math.cos(i * 3.14) * 0.5 + 0.5) * 36 - 18,
-        orbitSpeed: 0.0028 + (i % 5) * 0.0006,
-        size: 1.3 + (i % 4) * 0.45,
-        baseAlpha: 0.32 + (i % 3) * 0.16,
-        cluster: i % 4,
-        clusterOffsetAngle: (((i * 13) % 100) / 100) * Math.PI * 2,
-        clusterOffsetDist: 0.15 + (((i * 7) % 100) / 100) * 0.85,
-        layer: i % 4,
-        layerSlot: Math.floor(i / 4),
-        rayAngle: fr * Math.PI * 2,
-        rayDist: 0.08 + Math.pow(((i * 19) % 100) / 100, 1.4) * 0.92,
-        x: W * 0.5,
-        y: H * 0.5,
-        alpha: 0.4
+      var isGold = i % 3 !== 0;
+      nodes.push({
+        x: ((i * 97) % 100) * 0.01 * W,
+        y: ((i * 53) % 100) * 0.01 * H,
+        vx: (Math.cos(i * 2.1) * 0.22) * (isMobile ? 0.65 : 1),
+        vy: (Math.sin(i * 1.7) * 0.22) * (isMobile ? 0.65 : 1),
+        r: isGold ? 1.4 + (i % 3) * 0.45 : 1.2 + (i % 2) * 0.35,
+        baseAlpha: isGold ? 0.38 + (i % 3) * 0.14 : 0.22 + (i % 2) * 0.1,
+        isGold: isGold,
+        phase: i * 0.7
       });
     }
 
     var animId = null;
     var active = true;
-    var lastTime = performance.now();
+    var lastScrollY = window.scrollY || 0;
+    var scrollVel = 0;
     var time = 0;
 
     window.__pauseCanvas = function () {
@@ -1189,7 +1206,6 @@
     window.__resumeCanvas = function () {
       if (!active) {
         active = true;
-        lastTime = performance.now();
         if (!animId) animId = requestAnimationFrame(loop);
       }
     };
@@ -1203,52 +1219,29 @@
         }
       } else {
         active = true;
-        lastTime = performance.now();
         if (!animId) {
           animId = requestAnimationFrame(loop);
         }
       }
     });
 
-    function loop(now) {
+    function loop() {
       if (!active) return;
       animId = requestAnimationFrame(loop);
 
-      var dt = Math.min((now - lastTime) / 1000, 0.1);
-      lastTime = now;
-      time += dt;
-
-      mouse.x += (mouse.targetX - mouse.x) * 0.06;
-      mouse.y += (mouse.targetY - mouse.y) * 0.06;
+      time += 0.016;
+      pointer.x += (pointer.targetX - pointer.x) * 0.08;
+      pointer.y += (pointer.targetY - pointer.y) * 0.08;
 
       var scrollY = window.scrollY || window.pageYOffset;
-      var vh = window.innerHeight;
+      var deltaS = scrollY - lastScrollY;
+      lastScrollY = scrollY;
+      scrollVel = scrollVel * 0.88 + deltaS * 0.12;
 
+      var vh = window.innerHeight;
       var skillsY = skillsEl ? Math.max(1, skillsEl.offsetTop - vh * 0.35) : vh;
       var projY = projEl ? Math.max(skillsY + 1, projEl.offsetTop - vh * 0.35) : vh * 2;
       var contactY = contactEl ? Math.max(projY + 1, contactEl.offsetTop - vh * 0.5) : vh * 3;
-
-      var wHero = 0;
-      var wSkills = 0;
-      var wProj = 0;
-      var wContact = 0;
-
-      if (scrollY <= skillsY) {
-        var p1 = Math.min(Math.max(scrollY / skillsY, 0), 1);
-        var ease1 = p1 * p1 * (3 - 2 * p1);
-        wHero = 1 - ease1;
-        wSkills = ease1;
-      } else if (scrollY <= projY) {
-        var p2 = Math.min(Math.max((scrollY - skillsY) / (projY - skillsY), 0), 1);
-        var ease2 = p2 * p2 * (3 - 2 * p2);
-        wSkills = 1 - ease2;
-        wProj = ease2;
-      } else {
-        var p3 = Math.min(Math.max((scrollY - projY) / (contactY - projY), 0), 1);
-        var ease3 = p3 * p3 * (3 - 2 * p3);
-        wProj = 1 - ease3;
-        wContact = ease3;
-      }
 
       var activeStep = 0;
       if (scrollY >= contactY - vh * 0.1) {
@@ -1279,206 +1272,95 @@
         railFill.style.height = Math.min(Math.max(railProgress, 0), 1) * 100 + '%';
       }
 
-      var projProgress = 0;
-      if (projEl) {
-        var pRect = projEl.getBoundingClientRect();
-        projProgress = Math.min(Math.max((vh - pRect.top) / (vh + pRect.height), 0), 1);
-      }
-
       ctx.clearRect(0, 0, W, H);
 
-      var heroCenter = {
-        x: W > 768 ? W * 0.62 : W * 0.5,
-        y: W > 768 ? H * 0.48 : H * 0.42
-      };
+      // 1. Subtle architectural precision dot-grid (illuminates near cursor/touch)
+      var gridStep = isMobile ? 64 : 52;
+      var interactRadius = isMobile ? 140 : 210;
+      for (var gx = gridStep * 0.5; gx < W; gx += gridStep) {
+        for (var gy = gridStep * 0.5; gy < H; gy += gridStep) {
+          var dxg = gx - pointer.x;
+          var dyg = gy - pointer.y;
+          var distG = Math.hypot(dxg, dyg);
+          if (distG < interactRadius) {
+            var boost = (1 - distG / interactRadius);
+            ctx.fillStyle = 'rgba(232, 212, 77, ' + (0.04 + boost * 0.24).toFixed(3) + ')';
+            ctx.fillRect(gx - 1, gy - 1, 2, 2);
+          } else {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+            ctx.fillRect(gx - 0.5, gy - 0.5, 1.2, 1.2);
+          }
+        }
+      }
 
-      var minDim = Math.min(W, H);
-      var planetRadius = minDim * (W > 768 ? 0.3 : 0.38);
-
-      var baseTiltX = 1.12;
-      var tiltX = baseTiltX + ((mouse.y - H * 0.5) / H) * 0.28;
-      var tiltY = ((mouse.x - W * 0.5) / W) * 0.38;
-
-      var clusterCenters = [
-        { x: W * 0.28, y: H * 0.32 },
-        { x: W * 0.72, y: H * 0.3 },
-        { x: W * 0.3, y: H * 0.68 },
-        { x: W * 0.7, y: H * 0.66 }
-      ];
-      var clusterMaxDist = minDim * (isMobile ? 0.16 : 0.13);
-
-      var layerX = [W * 0.18, W * 0.38, W * 0.6, W * 0.82];
-      var nodesPerLayer = Math.ceil(N / 4);
-
-      var decisionCenter = { x: W * 0.5, y: H * 0.48 };
-
-      var targets = [];
+      // 2. Update node positions with smooth drift + subtle scroll parallax
+      var maxLinkDist = isMobile ? 105 : 142;
       for (var i = 0; i < N; i++) {
-        var p = particles[i];
+        var n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy - scrollVel * (n.isGold ? 0.035 : 0.018);
 
-        var orbAngle = p.angle + time * p.orbitSpeed * 10;
-        var rOrb = planetRadius * p.baseRadiusFactor;
-        var x0 = rOrb * Math.cos(orbAngle);
-        var y0 = rOrb * Math.sin(orbAngle) * Math.cos(tiltX) + p.zJitter * Math.sin(tiltX);
-        var z0 = rOrb * Math.sin(orbAngle) * Math.sin(tiltX) - p.zJitter * Math.cos(tiltX);
-        var depthScale = 1 + z0 / (planetRadius * 3.5);
-        var hx = heroCenter.x + (x0 * Math.cos(tiltY) - z0 * Math.sin(tiltY)) * depthScale;
-        var hy = heroCenter.y + y0 * depthScale;
-        var hAlpha = p.baseAlpha * (0.35 + 0.65 * ((z0 + planetRadius) / (planetRadius * 2)));
-
-        var cCenter = clusterCenters[p.cluster];
-        var cAngle = p.clusterOffsetAngle + time * 0.2 * (p.cluster % 2 === 0 ? 1 : -1);
-        var cDist = p.clusterOffsetDist * clusterMaxDist;
-        var sx = cCenter.x + Math.cos(cAngle) * cDist;
-        var sy = cCenter.y + Math.sin(cAngle) * cDist;
-        var sAlpha = p.baseAlpha * 0.85;
-
-        var lx = layerX[p.layer];
-        var ly = H * 0.18 + ((p.layerSlot + 0.5) / nodesPerLayer) * (H * 0.64) + Math.sin(time * 0.7 + i) * 6;
-        var layerThreshold = 0.15 + p.layer * 0.2;
-        var isLit = projProgress >= layerThreshold;
-        var pAlpha = isLit ? Math.min(p.baseAlpha * 1.6, 0.95) : p.baseAlpha * 0.35;
-
-        var pulse = Math.sin(time * 2.5) * 0.08;
-        var cDistDec = p.rayDist * minDim * 0.38 * (1 - pulse);
-        var cAngleDec = p.rayAngle + time * 0.15;
-        var dx = decisionCenter.x + Math.cos(cAngleDec) * cDistDec;
-        var dy = decisionCenter.y + Math.sin(cAngleDec) * cDistDec;
-        var dAlpha = Math.min(p.baseAlpha * 1.4, 0.9);
-
-        var finalX = 0;
-        var finalY = 0;
-        var finalAlpha = 0;
-        if (wHero > 0 || (wSkills > 0 && wProj === 0 && wContact === 0)) {
-          finalX = hx * wHero + sx * wSkills;
-          finalY = hy * wHero + sy * wSkills;
-          finalAlpha = hAlpha * wHero + sAlpha * wSkills;
-        } else if (wSkills > 0 || (wProj > 0 && wContact === 0)) {
-          finalX = sx * wSkills + lx * wProj;
-          finalY = sy * wSkills + ly * wProj;
-          finalAlpha = sAlpha * wSkills + pAlpha * wProj;
-        } else {
-          finalX = lx * wProj + dx * wContact;
-          finalY = ly * wProj + dy * wContact;
-          finalAlpha = pAlpha * wProj + dAlpha * wContact;
+        // Gentle cursor magnetic repulsion/orbit
+        var dxP = n.x - pointer.x;
+        var dyP = n.y - pointer.y;
+        var distP = Math.hypot(dxP, dyP);
+        if (distP > 1 && distP < interactRadius * 0.85) {
+          var push = (1 - distP / (interactRadius * 0.85)) * 0.35;
+          n.x += (dxP / distP) * push;
+          n.y += (dyP / distP) * push;
         }
 
-        p.x += (finalX - p.x) * 0.22;
-        p.y += (finalY - p.y) * 0.22;
-        p.alpha += (finalAlpha - p.alpha) * 0.22;
-
-        targets.push({
-          x: p.x,
-          y: p.y,
-          alpha: p.alpha,
-          size: p.size,
-          layer: p.layer,
-          cluster: p.cluster,
-          isLit: isLit
-        });
+        // Wrap around screen edges seamlessly
+        if (n.x < -20) n.x = W + 20;
+        if (n.x > W + 20) n.x = -20;
+        if (n.y < -20) n.y = H + 20;
+        if (n.y > H + 20) n.y = -20;
       }
 
-      if (wProj > 0.04) {
-        var synAlpha = wProj * 0.12;
-        ctx.lineWidth = 1;
-        for (var i = 0; i < N; i++) {
-          var pA = targets[i];
-          if (pA.layer >= 3) continue;
-          for (var j = 0; j < N; j++) {
-            var pB = targets[j];
-            if (pB.layer === pA.layer + 1 && Math.abs(pA.y - pB.y) < H * 0.28) {
-              var litConn = pA.isLit && pB.isLit;
-              ctx.strokeStyle = litConn
-                ? 'rgba(232, 212, 77, ' + synAlpha * 2.2 + ')'
-                : 'rgba(232, 212, 77, ' + synAlpha * 0.6 + ')';
-              ctx.beginPath();
-              ctx.moveTo(pA.x, pA.y);
-              ctx.lineTo(pB.x, pB.y);
-              ctx.stroke();
-            }
-          }
-        }
-      }
-
-      if (wSkills > 0.04) {
-        var clustLineAlpha = wSkills * 0.18;
-        ctx.lineWidth = 1;
-        for (var i = 0; i < N; i++) {
-          var pA = targets[i];
-          for (var j = i + 1; j < N; j++) {
-            var pB = targets[j];
-            if (pA.cluster === pB.cluster) {
-              var dx = pA.x - pB.x;
-              var dy = pA.y - pB.y;
-              var dist = Math.hypot(dx, dy);
-              if (dist < 88) {
-                var a = clustLineAlpha * (1 - dist / 88);
-                ctx.strokeStyle = 'rgba(232, 212, 77, ' + a + ')';
-                ctx.beginPath();
-                ctx.moveTo(pA.x, pA.y);
-                ctx.lineTo(pB.x, pB.y);
-                ctx.stroke();
-              }
-            }
-          }
-        }
-      }
-
-      if (wContact > 0.04) {
-        var rayAlpha = wContact * 0.15;
-        ctx.lineWidth = 1;
-        for (var i = 0; i < N; i++) {
-          var pA = targets[i];
-          var distToC = Math.hypot(pA.x - decisionCenter.x, pA.y - decisionCenter.y);
-          if (distToC < minDim * 0.42) {
-            var a = rayAlpha * (1 - distToC / (minDim * 0.42));
-            ctx.strokeStyle = 'rgba(232, 212, 77, ' + a + ')';
+      // 3. Draw crisp constellation links between nearby nodes
+      ctx.lineWidth = 0.85;
+      for (var i = 0; i < N; i++) {
+        var nA = nodes[i];
+        for (var j = i + 1; j < N; j++) {
+          var nB = nodes[j];
+          var dx = nA.x - nB.x;
+          var dy = nA.y - nB.y;
+          if (Math.abs(dx) > maxLinkDist || Math.abs(dy) > maxLinkDist) continue;
+          var dist = Math.hypot(dx, dy);
+          if (dist < maxLinkDist) {
+            var lineAlpha = (1 - dist / maxLinkDist) * 0.16;
+            ctx.strokeStyle = nA.isGold || nB.isGold
+              ? 'rgba(232, 212, 77, ' + lineAlpha.toFixed(3) + ')'
+              : 'rgba(255, 255, 255, ' + (lineAlpha * 0.6).toFixed(3) + ')';
             ctx.beginPath();
-            ctx.moveTo(pA.x, pA.y);
-            ctx.lineTo(decisionCenter.x, decisionCenter.y);
+            ctx.moveTo(nA.x, nA.y);
+            ctx.lineTo(nB.x, nB.y);
             ctx.stroke();
           }
         }
 
-        var coreR = 48 * wContact;
-        var grad = ctx.createRadialGradient(
-          decisionCenter.x,
-          decisionCenter.y,
-          2,
-          decisionCenter.x,
-          decisionCenter.y,
-          coreR
-        );
-        grad.addColorStop(0, 'rgba(255, 246, 176, ' + 0.75 * wContact + ')');
-        grad.addColorStop(0.25, 'rgba(232, 212, 77, ' + 0.55 * wContact + ')');
-        grad.addColorStop(0.65, 'rgba(232, 212, 77, ' + 0.18 * wContact + ')');
-        grad.addColorStop(1, 'rgba(232, 212, 77, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(decisionCenter.x, decisionCenter.y, coreR, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = 'rgba(255, 255, 255, ' + 0.9 * wContact + ')';
-        ctx.beginPath();
-        ctx.arc(decisionCenter.x, decisionCenter.y, 3 * wContact, 0, Math.PI * 2);
-        ctx.fill();
+        // Interactive cursor/touch constellation tether
+        var dPointer = Math.hypot(nA.x - pointer.x, nA.y - pointer.y);
+        if (dPointer < interactRadius) {
+          var pAlpha = (1 - dPointer / interactRadius) * 0.28;
+          ctx.strokeStyle = 'rgba(232, 212, 77, ' + pAlpha.toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.moveTo(nA.x, nA.y);
+          ctx.lineTo(pointer.x, pointer.y);
+          ctx.stroke();
+        }
       }
 
+      // 4. Draw crisp sovereign nodes (zero blurry radial gradients)
       for (var i = 0; i < N; i++) {
-        var p = targets[i];
-        if (p.alpha <= 0.01) continue;
-
-        ctx.fillStyle = 'rgba(232, 212, 77, ' + p.alpha + ')';
+        var n = nodes[i];
+        var pulseAlpha = n.baseAlpha + Math.sin(time * 2 + n.phase) * 0.1;
+        ctx.fillStyle = n.isGold
+          ? 'rgba(232, 212, 77, ' + Math.max(0.15, pulseAlpha).toFixed(3) + ')'
+          : 'rgba(209, 213, 219, ' + Math.max(0.12, pulseAlpha).toFixed(3) + ')';
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fill();
-
-        if (wProj > 0.4 && p.isLit) {
-          ctx.fillStyle = 'rgba(255, 246, 176, ' + p.alpha * 0.45 + ')';
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 2.2, 0, Math.PI * 2);
-          ctx.fill();
-        }
       }
     }
 
@@ -1528,22 +1410,22 @@
     });
   }
 
-  // Timeline accordion (all 3 experience cards open by default)
+  // Timeline accordion: ONLY first (current) role open by default; roles 2 & 3 expand on click/tap
   var items = D.querySelectorAll('.timeline-item');
-  items.forEach(function (it) {
+  items.forEach(function (it, idx) {
     var card = it.querySelector('.timeline-card');
     var t = D.createElement('span');
     t.className = 'tl-toggle';
-    t.textContent = '+';
     card.appendChild(t);
     function set(o) {
       card.classList.toggle('open', o);
       it.classList.toggle('open-item', o);
+      t.textContent = o ? '−' : '+';
     }
     card.addEventListener('click', function () {
       set(!card.classList.contains('open'));
     });
-    set(true);
+    set(idx === 0);
   });
 
   // Stagger reveal delays
@@ -1555,9 +1437,32 @@
     '.cert-item'
   ].forEach(function (s) {
     D.querySelectorAll(s).forEach(function (el, i) {
-      el.style.transitionDelay = i * 80 + 'ms';
+      el.style.transitionDelay = i * 70 + 'ms';
     });
   });
+
+  // Smooth Section-to-Section Entrance Observer
+  var allSections = D.querySelectorAll('main > section[id]');
+  if ('IntersectionObserver' in window) {
+    var secRevealObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('section-visible');
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -6% 0px' }
+    );
+    allSections.forEach(function (sec, idx) {
+      if (idx === 0) sec.classList.add('section-visible');
+      secRevealObserver.observe(sec);
+    });
+  } else {
+    allSections.forEach(function (sec) {
+      sec.classList.add('section-visible');
+    });
+  }
 
   // Animated metric counters
   function count(el) {
@@ -1588,24 +1493,33 @@
     co.observe(el);
   });
 
-  // Scrollspy active navigation link
+  // Scrollspy active navigation link (syncs both Top Navbar & Mobile Bottom Dock)
   var links = D.querySelectorAll('.nav-links a');
-  var secs = [].map.call(links, function (a) {
-    return D.querySelector(a.getAttribute('href'));
-  });
+  var dockLinks = D.querySelectorAll('#mobileBottomDock .dock-item[data-dock-sec]');
+  var observedSecIds = ['hero', 'about', 'experience', 'roi-simulator', 'projects', 'skills', 'education', 'qr-hub', 'contact'];
   var so = new IntersectionObserver(
     function (es) {
       es.forEach(function (e) {
         if (e.isIntersecting) {
+          var id = e.target.id;
           links.forEach(function (a) {
-            a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+          });
+          dockLinks.forEach(function (d) {
+            var targetSec = d.getAttribute('data-dock-sec');
+            var isMatch =
+              targetSec === id ||
+              (id === 'about' && targetSec === 'hero') ||
+              ((id === 'skills' || id === 'education') && targetSec === 'projects');
+            d.classList.toggle('active', isMatch);
           });
         }
       });
     },
-    { rootMargin: '-45% 0px -50% 0px' }
+    { rootMargin: '-38% 0px -52% 0px' }
   );
-  secs.forEach(function (s) {
+  observedSecIds.forEach(function (id) {
+    var s = D.getElementById(id);
     if (s) so.observe(s);
   });
 
@@ -1616,7 +1530,7 @@
         c.classList.remove('pop');
         void c.offsetWidth;
         if (!c.classList.contains('hidden')) {
-          c.style.animationDelay = i * 70 + 'ms';
+          c.style.animationDelay = i * 60 + 'ms';
           c.classList.add('pop');
         }
       });
@@ -1630,11 +1544,18 @@
         c.classList.remove('pop');
         void c.offsetWidth;
         if (!c.classList.contains('hidden')) {
-          c.style.animationDelay = i * 40 + 'ms';
+          c.style.animationDelay = i * 35 + 'ms';
           c.classList.add('pop');
         }
       });
     });
   });
+
+  // Register Offline-First Service Worker (PWA Support for Hajj Forum)
+  if ('serviceWorker' in navigator && window.location.protocol.indexOf('http') === 0) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    });
+  }
 })();
 

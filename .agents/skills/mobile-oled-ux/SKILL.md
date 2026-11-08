@@ -26,3 +26,4 @@ description: Mobile-First Responsive UI/UX & OLED Dark-Mode Contrast System for 
 - **2-Column / Full-Width CTA Grid**: Hero and Contact buttons arrange in a clean grid (`min-height: 48px`) for effortless one-handed thumb tapping.
 - **Compact Timeline & Cards on Mobile**: Reduce horizontal card padding (`1.15rem` instead of `2rem`) and remove wasted left-gutter timeline indents on `<640px` viewports so content uses 92%+ of screen width.
 - **2x2 Architecture Flow Grid on Mobile**: Convert 4-step horizontal workflow diagrams into a clean 2x2 grid on narrow screens so labels never cramp or overflow.
+
