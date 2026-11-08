@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Salman Alharbi | Decision Intelligence &amp; Data Governance Specialist (PDPL &amp; NDMO)</title>
   <meta name="description" content="Personal portfolio of Salman Alharbi — Decision Intelligence &amp; Data Governance Specialist (PDPL &amp; NDMO) | Business &amp; IT Advisory. Bridging corporate reality with Saudi PDPL and NDMO compliance." />
-  <meta name="theme-color" content="#0b0b0c" />
+  <meta name="theme-color" content="#0F172A" />
+  <meta name="color-scheme" content="dark" />
 
   <!-- OpenGraph Social Share Card -->
   <link rel="canonical" href="https://salman-qq.github.io/Portfolio/" />
@@ -1271,7 +1272,7 @@
                 <!-- Card 1: vCard QR -->
                 <div class="qr-inline-card">
                   <button type="button" class="qr-img-btn" onclick="window.openQrModal('vcard')" aria-label="Enlarge Smart Contact Card QR">
-                    <img src="./assets/qr-vcard.svg" alt="Salman Alharbi vCard QR Code" width="160" height="160" loading="lazy" />
+                    <canvas class="qr-canvas" data-qr="vcard" width="180" height="180" aria-label="Salman Alharbi vCard QR Code"></canvas>
                   </button>
                   <div class="qr-inline-title" data-i18n="qr_card_vcard_title">Smart Contact Card (vCard)</div>
                   <p class="qr-inline-sub" data-i18n="qr_card_vcard_sub">Point phone camera to add phone, email &amp; LinkedIn to Contacts</p>
@@ -1284,7 +1285,7 @@
                 <!-- Card 2: Official Resume PDF QR -->
                 <div class="qr-inline-card">
                   <button type="button" class="qr-img-btn" onclick="window.openQrModal('cv')" aria-label="Enlarge Official Resume PDF QR">
-                    <img src="./assets/qr-cv.svg" alt="Salman Alharbi Official Resume PDF QR Code" width="160" height="160" loading="lazy" />
+                    <canvas class="qr-canvas" data-qr="cv" width="180" height="180" aria-label="Salman Alharbi Official Resume PDF QR Code"></canvas>
                   </button>
                   <div class="qr-inline-title" data-i18n="qr_card_cv_title">Official Resume PDF</div>
                   <p class="qr-inline-sub" data-i18n="qr_card_cv_sub">Instant direct download of SALMAN-ALHARBI-Resume.pdf</p>
@@ -1297,7 +1298,7 @@
                 <!-- Card 3: Portfolio Link QR -->
                 <div class="qr-inline-card">
                   <button type="button" class="qr-img-btn" onclick="window.openQrModal('portfolio')" aria-label="Enlarge Interactive Portfolio QR">
-                    <img src="./assets/qr-portfolio.svg" alt="Salman Alharbi Portfolio QR Code" width="160" height="160" loading="lazy" />
+                    <canvas class="qr-canvas" data-qr="portfolio" width="180" height="180" aria-label="Salman Alharbi Portfolio QR Code"></canvas>
                   </button>
                   <div class="qr-inline-title" data-i18n="qr_card_port_title">Interactive Portfolio Link</div>
                   <p class="qr-inline-sub" data-i18n="qr_card_port_sub">Open salman-qq.github.io/Portfolio on any mobile, iPad or laptop</p>
@@ -1348,10 +1349,14 @@
           <button type="button" class="qr-tab-btn" data-qr-tab="portfolio" onclick="window.switchQrTab('portfolio')" data-i18n="qr_tab_portfolio">🌐 Portfolio Link</button>
         </div>
 
-        <!-- High-Contrast Large Scan Stage -->
+        <!-- High-Contrast Large Scan Stage (Canvas-Rendered to prevent Samsung Internet Force-Dark White Inversion) -->
         <div class="qr-stage-box" id="qrStageBox" onclick="this.classList.toggle('qr-fullscreen-zoom')">
-          <img id="qrModalImg" src="./assets/qr-vcard.svg" alt="Salman Alharbi QR Code" width="260" height="260" />
+          <canvas id="qrModalCanvas" width="260" height="260" aria-label="Salman Alharbi QR Code"></canvas>
         </div>
+
+        <button type="button" id="qrContrastToggleBtn" class="qr-contrast-btn" onclick="window.toggleQrScanContrast()">
+          <span id="qrContrastToggleLabel">☀️ Light Scan Mode / وضع مسح فاتح</span>
+        </button>
 
         <div class="qr-stage-caption" id="qrModalCaption" data-i18n="qr_card_vcard_sub">Point phone camera to add phone, email &amp; LinkedIn to Contacts</div>
 

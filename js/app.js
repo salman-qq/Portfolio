@@ -484,18 +484,221 @@
     });
   });
 
-  // ===== SMART CONFERENCE QR & DIGITAL BUSINESS CARD CONTROLLER =====
+  // ===== SMART CONFERENCE QR & DIGITAL BUSINESS CARD CONTROLLER (HTML5 CANVAS RENDERED) =====
+  // Drawn directly onto HTML5 <canvas> so Samsung Internet (S23 Ultra) Force-Dark never inverts SVGs or creates a white glare layer
+  var QR_MATRICES = {
+    vcard: {
+      size: 57,
+      rows: [
+        "111111100111000100001110011110101100111100001011001111111",
+        "100000100100101111000001000000010000101001110101001000001",
+        "101110101101100100111110010001101011100101101011001011101",
+        "101110101100101010101010000100101110000010010001001011101",
+        "101110101001001011011101001111101010010110101001001011101",
+        "100000101001010011001010001000110001100111110110001000001",
+        "111111101010101010101010101010101010101010101010101111111",
+        "000000001010101000011111101000111010010100110100100000000",
+        "101111100100111011001010001111110110000100011101101111100",
+        "111100000000000101110100000110000001010111100101011110101",
+        "010011110001100010110100100001101000110101111000000110001",
+        "010010001010110110001000111101111001100100110000100000111",
+        "001000100010111110100101101000101101000010011111001100100",
+        "100110001001011001101000111010010100001101000011111111011",
+        "101101101110110110001011110000111000111001110100101000111",
+        "011011000001101101010110100111100001100101001001111001011",
+        "100001101110100100000100000010100011001001111111101010010",
+        "100011011100100010011111010101001100011100001010110110010",
+        "001101110011000010011010001111100011110011010010111000011",
+        "110000010110100100001001011101101110001110101111110011000",
+        "101001110111100110001101000001000000100010100100101010101",
+        "111110001001110111010011110001111010111110001010100111100",
+        "010100111000100101010110101101110110100010010000110111101",
+        "011011001110011000011011111001100111000001100110110111100",
+        "011100110110000110100011100000010110100010000101111011000",
+        "101000000011101111101001100110010100000111001011010111110",
+        "110111111000001010111100001111110001100010010000111111110",
+        "010010001011011010100111111000110010000111010101100010101",
+        "010110101100101000110110011010101111011110110101101011010",
+        "111010001001010010100001001000100100101101000111100010101",
+        "111011111100110111000110001111110001101100010110111110011",
+        "110110000000101111110001101001101001110101000000000111100",
+        "010011100000111001001100111011100111000000011111100000010",
+        "110100011011011111000111000100001010101001100110001011101",
+        "110011100000001110000010011001010100010001110101111100010",
+        "011110010001000110111111011000001000100111101000110111010",
+        "010011100100110111100111111010111111001100100010100100100",
+        "000001010011101100100001110000101110111110111001101000110",
+        "001111101101110010011010001110110001010010010110110100011",
+        "111111011001100111111011000010110101111001101100110001001",
+        "110010101111010000010011111110100011000011100100110101100",
+        "111001001010001001010011010010101000011101111011111010100",
+        "111111110100001011110011101101010101010100110100110111100",
+        "110011001000110110111110101110001001110101111100000001100",
+        "001000101111011101001111011110000101110010010100010010101",
+        "001101000011111110111111110100000110000100110010001001111",
+        "101001111111011000101110000101000111101101000111111010000",
+        "111110010010011101010101101101001000010000100100001100101",
+        "000000110111110001011001111111101100000000011111111111110",
+        "000000001101100001011110101000101000110110001100100010101",
+        "111111100111011001110100001010101100100000101100101010010",
+        "100000101111101111100011101000100001111001001001100010100",
+        "101110101111001100010001111111111111010110011111111110110",
+        "101110101010101111111010101100110110011100001101110000100",
+        "101110101100101011101111110001001101001000000001101000000",
+        "100000100000000000001010100010011001101110010000100101001",
+        "111111101111100010001001110001011111100000110111010011100"
+      ]
+    },
+    cv: {
+      size: 33,
+      rows: [
+        "111111100011010011111001001111111",
+        "100000100001001101100110001000001",
+        "101110101010000101101110101011101",
+        "101110101001000101000010001011101",
+        "101110101001010111101010101011101",
+        "100000101100011000110010101000001",
+        "111111101010101010101010101111111",
+        "000000001001101100110101100000000",
+        "101111100011011011001001101111100",
+        "011110010010111110011101001101101",
+        "110011100101011111001010011010110",
+        "100001010100110011100100011011101",
+        "011100101001001001011101001101010",
+        "010011001111010110100000101111011",
+        "000010100111001000000110111101010",
+        "100110010010010100000111111101100",
+        "111100111101110101010010110110001",
+        "111100001110100001111011011101101",
+        "010001111100100111101010101110110",
+        "010001011000010011111110011111100",
+        "000110100100111000000001100111010",
+        "111001010101001010011111111101001",
+        "101011101001101001101101000010110",
+        "100011011111101110110111011011110",
+        "100001100111010001110011111110010",
+        "000000001101010011111110100010111",
+        "111111100000001111100001101010110",
+        "100000101010010101111001100011101",
+        "101110101101101010011100111111000",
+        "101110101100100111100111110010001",
+        "101110101110011101010100101101100",
+        "100000100100100000110110001011100",
+        "111111101100011001010001001100010"
+      ]
+    },
+    portfolio: {
+      size: 29,
+      rows: [
+        "11111110011101001001101111111",
+        "10000010011101111000001000001",
+        "10111010101010110000001011101",
+        "10111010111011000101001011101",
+        "10111010100011001011101011101",
+        "10000010101111110110001000001",
+        "11111110101010101010101111111",
+        "00000000100010111010100000000",
+        "10111110000010000110101111100",
+        "11011101101101001111111110001",
+        "00001010101101111100110110000",
+        "11111000010011001010000101010",
+        "10110111000100100101000001100",
+        "00100101100010001111111110001",
+        "10110111000000010010101011100",
+        "01101000111100101001111100010",
+        "11001010001010010100010001100",
+        "11001100000101101111111110101",
+        "10000010001001110100001110100",
+        "10111000110001011001100010010",
+        "10100011001100111111111110111",
+        "00000000101000001110100011111",
+        "11111110010100010101101011100",
+        "10000010101000100000100010011",
+        "10111010100000011000111110100",
+        "10111010111100101001000001111",
+        "10111010111011111010001111110",
+        "10000010011001101011110101010",
+        "11111110101100100101000011100"
+      ]
+    }
+  };
+
   var qrModal = document.getElementById('qrModal');
-  var qrModalImg = document.getElementById('qrModalImg');
+  var qrModalCanvas = document.getElementById('qrModalCanvas');
   var qrModalCaption = document.getElementById('qrModalCaption');
   var qrStageBox = document.getElementById('qrStageBox');
+  var qrContrastToggleLabel = document.getElementById('qrContrastToggleLabel');
   var currentQrTab = 'vcard';
+  var qrLightScanMode = false;
 
-  var qrAssetMap = {
-    vcard: './assets/qr-vcard.svg',
-    cv: './assets/qr-cv.svg',
-    portfolio: './assets/qr-portfolio.svg'
+  function isFinderPatternModule(r, c, size) {
+    return (
+      (r < 7 && c < 7) ||
+      (r < 7 && c >= size - 7) ||
+      (r >= size - 7 && c < 7)
+    );
+  }
+
+  window.renderQrCanvas = function (canvas, type, lightMode) {
+    if (!canvas || !canvas.getContext) return;
+    var data = QR_MATRICES[type] || QR_MATRICES.vcard;
+    var size = data.size;
+    var rows = data.rows;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    var cssSize = parseInt(canvas.getAttribute('width') || '180', 10);
+    canvas.width = Math.round(cssSize * dpr);
+    canvas.height = Math.round(cssSize * dpr);
+    canvas.style.width = cssSize + 'px';
+    canvas.style.height = cssSize + 'px';
+
+    var ctx = canvas.getContext('2d');
+    ctx.save();
+    ctx.scale(dpr, dpr);
+
+    var quietZone = 3.2;
+    var totalUnits = size + quietZone * 2;
+    var cell = cssSize / totalUnits;
+
+    // Background fill (zero harsh #ffffff white glare by default)
+    ctx.fillStyle = lightMode ? '#FEFCE8' : '#0F172A';
+    ctx.fillRect(0, 0, cssSize, cssSize);
+
+    // Subtle executive inner border
+    ctx.strokeStyle = lightMode ? 'rgba(15, 23, 42, 0.18)' : 'rgba(250, 204, 21, 0.38)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(2, 2, cssSize - 4, cssSize - 4);
+
+    for (var r = 0; r < size; r++) {
+      var rowStr = rows[r];
+      for (var c = 0; c < size; c++) {
+        if (rowStr.charCodeAt(c) === 49) {
+          var x = (c + quietZone) * cell;
+          var y = (r + quietZone) * cell;
+          if (lightMode) {
+            ctx.fillStyle = isFinderPatternModule(r, c, size) ? '#0F172A' : '#1E293B';
+          } else {
+            ctx.fillStyle = isFinderPatternModule(r, c, size) ? '#FACC15' : '#FEF08A';
+          }
+          // Draw crisp module with slight overlap to prevent subpixel gaps
+          ctx.fillRect(x - 0.15, y - 0.15, cell + 0.3, cell + 0.3);
+        }
+      }
+    }
+
+    ctx.restore();
   };
+
+  function renderAllInlineQrCanvases() {
+    document.querySelectorAll('.qr-canvas[data-qr]').forEach(function (canvas) {
+      var type = canvas.getAttribute('data-qr') || 'vcard';
+      window.renderQrCanvas(canvas, type, false);
+    });
+    if (qrModalCanvas) {
+      window.renderQrCanvas(qrModalCanvas, currentQrTab, qrLightScanMode);
+    }
+  }
+
+  renderAllInlineQrCanvases();
 
   var qrCaptionKeyMap = {
     vcard: 'qr_card_vcard_sub',
@@ -503,13 +706,39 @@
     portfolio: 'qr_card_port_sub'
   };
 
+  function updateQrContrastBtnLabel() {
+    if (!qrContrastToggleLabel) return;
+    if (qrLightScanMode) {
+      qrContrastToggleLabel.textContent =
+        currentLang === 'ar'
+          ? '🌙 العودة للوضع الذهبي الداكن (Dark-Gold Mode)'
+          : '🌙 Switch to Executive Dark-Gold Mode';
+    } else {
+      qrContrastToggleLabel.textContent =
+        currentLang === 'ar'
+          ? '☀️ تبديل لوضع المسح الفاتح للكاميرات القديمة'
+          : '☀️ Switch to Light Scan Contrast';
+    }
+  }
+
+  window.toggleQrScanContrast = function () {
+    qrLightScanMode = !qrLightScanMode;
+    if (qrStageBox) {
+      qrStageBox.classList.toggle('qr-stage-light', qrLightScanMode);
+    }
+    if (qrModalCanvas) {
+      window.renderQrCanvas(qrModalCanvas, currentQrTab, qrLightScanMode);
+    }
+    updateQrContrastBtnLabel();
+  };
+
   window.switchQrTab = function (tabName) {
     currentQrTab = tabName || 'vcard';
     document.querySelectorAll('.qr-tab-btn').forEach(function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-qr-tab') === currentQrTab);
     });
-    if (qrModalImg && qrAssetMap[currentQrTab]) {
-      qrModalImg.src = qrAssetMap[currentQrTab];
+    if (qrModalCanvas) {
+      window.renderQrCanvas(qrModalCanvas, currentQrTab, qrLightScanMode);
     }
     if (qrModalCaption) {
       var capKey = qrCaptionKeyMap[currentQrTab];
@@ -520,6 +749,7 @@
     if (qrStageBox) {
       qrStageBox.classList.remove('qr-fullscreen-zoom');
     }
+    updateQrContrastBtnLabel();
   };
 
   window.openQrModal = function (tabName) {
